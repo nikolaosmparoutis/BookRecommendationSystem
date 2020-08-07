@@ -1,0 +1,46 @@
+--- What is collaborative Filtering (CF)---
+Is unsupervised.
+Collaborators =  users
+Filtering = automatic predictions filtered by the preference
+If the user A has the same taste as B it 's more likely that these two will agree on the future than wth a random person.
+Its like the marriage in a simple exaple but extended to  many persons, an "open marriage relationship".
+
+--- Techniques on Recommendation systems for collaborative filtering ---
+Goffrey Hinton shown that RBM for collaborative filtering sightly won the SVD models on Netflix.
+When both are lineraly combined had error less than  6% that the Netfli own system.
+Ref : Restricted Boltzmann Machines for Collaborative Filtering
+
+--- Requirements on CF / Problems of CF ---
+1. Very large datasets,
+2. Very large diversity and independence of opinions,
+3. Input of new users create the cold start problem, limited to accuracy because of non enough data
+   for the new entry, requires the user's past.
+4. Cold start also is for items, require ratings from many collaborators.
+5. Scalability,large sparcity of matrixes creates performance issues like on OTE.
+6. Synonyms, the CF gets confussed with synnonyms and teats them differently.
+7. Neutral users do not give value to the system nor take value.
+5. Users with extreme tastes make reccomendations very hard.
+6. Biased users give to their own items more rating than to the other side.
+7. Rich get richer effect, the long tail effect breaks.
+
+--- Steps of CF---
+1. Find similarities of users or items
+2. Precict the rating of the items that are not rated yet by the users. ONLY using the rating despite  the
+users' differencies.
+
+--- Accuracy measure---
+RMSE, MAE etc.
+
+--- Family algos for CF---
+1. Memory based, are statistical
+2.  Factorized - Dimensionality Reductions family
+PCA, SVD, NFM, Autoencoders.
+
+
+--- Improving Recommendation Lists Through Topic Diversification ---
+1. Balancing top-N recommendation lists according to the active user’s full range of interests
+2. Intra-list similarity metric.
+3. Accuracy versus user satisfaction
+4. Book dataset :
+    K-folding with parameter K = 4
+    Train 3/4 , Test 1/4
