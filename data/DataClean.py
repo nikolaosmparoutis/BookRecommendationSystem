@@ -31,18 +31,15 @@ class DataClean:
         return self.df
 
     def remove_bad_char(self, col_to_remove_char="ISBN", char_to_rm="X"):
-        print("IN remove_bad_char")
-        # if self.df.columns.any() == col_to_remove_char:
         for col_name in self.df.columns:
             if col_name == col_to_remove_char:
                 self.df[col_to_remove_char] = self.df[col_to_remove_char].str.replace(char_to_rm, "")
         return self.df
 
-    def replace_nan(self, column_with_nan):
-        self.df[column_with_nan].astype(str)
-        # for row in self.df.ISBN:
-        #     self.df[each_colm].fillna(self.df[each_colm].interpolate(method='linear'),inplace=True)
-        self.df[column_with_nan] = self.df[column_with_nan].interpolate(method='linear').ffill().bfill()
+    def replace_nan(self, columns_with_nan):
+        for each_column in columns_with_nan:
+            self.df[each_column].astype(str)
+            self.df[each_column] = self.df[each_column].interpolate(method='linear').ffill().bfill()
         return self.df
 
     # This created to aggregate the logic running all at once for each dataset.
@@ -57,5 +54,5 @@ class DataClean:
         self.check_unique_values()
         self.remove_bad_char()
         self.check_numerical_and_set_nan(numeric_col_to_nan)
+        self.replace_nan(numeric_col_to_nan)
         print(self.df)
-        # self.replace_nan(numeric_col_to_nan)

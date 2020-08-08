@@ -6,6 +6,7 @@ class model:
     # self.base_model =
 
     def load_data(self):
+        pass
         #self.dataset =
 
     def build(self):

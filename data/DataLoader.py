@@ -55,7 +55,7 @@ class DataLoader:
         try:
             self.data = pd.read_csv(DataLoader.directory_to_extract_to + filename,
                                     sep=";", encoding='latin-1', error_bad_lines=False, warn_bad_lines=False,
-                                    low_memory=False, memory_map=True, nrows=50
+                                    low_memory=False, memory_map=True
                                     )
         except:
             raise TypeError("Wrong file name.")
@@ -91,3 +91,36 @@ to_drop_columns = []
 numeric_col_to_nan = ["User-ID", "Age"]
 data_users = DataClean(users)
 data_users.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
+
+
+foreign_key1 = "ISBN"
+foreign_key2 = "User-ID"
+
+# Joins of entities to find the difference among the two cases:
+# Some users  rated books that does not exist in Books dataset.
+# So we work with the data from the second case.
+
+def nums_fk_alignements(foreign_key_1, foreign_key_2):
+
+    ratings_new = ratings[ratings[foreign_key1].isin(books[foreign_key1])]
+    ratings_new = ratings_new[ratings_new[foreign_key2].isin(users[foreign_key2])]
+
+    print(ratings.shape)
+    print(ratings_new.shape)
+    return ratings_new
+
+
+ratings_new = nums_fk_alignements(foreign_key1,foreign_key2)
+
+
+# ratings with zero are not the absolute truth.
+def ratings_explicit_gathering(ratings_new):
+    ratings_explicit = ratings_new[ratings_new["Book-Rating"]!=0]
+    return ratings_explicit
+
+# hold user ids who exists in raters
+def users_explicit_gathering(ratings_explicit):
+    users_explicit = users[users["User-ID"].isin(ratings_explicit["User-ID"])]
+    return users_explicit
+
+
