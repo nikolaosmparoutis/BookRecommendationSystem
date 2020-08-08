@@ -2,6 +2,8 @@
 # http://www2.informatik.uni-freiburg.de/~cziegler/BX/
 import os
 import pandas as pd
+
+
 from data.DataClean import DataClean
 
 class DataLoader:
@@ -54,7 +56,7 @@ class DataLoader:
         try:
             self.data = pd.read_csv(DataLoader.directory_to_extract_to + filename,
                                     sep=";", encoding='latin-1', error_bad_lines=False, warn_bad_lines=False,
-                                    low_memory=False, memory_map=True
+                                    low_memory=False, memory_map=True, nrows= 100000
                                     )
         except:
             raise TypeError("Wrong file name.")
@@ -65,8 +67,8 @@ paths = "/home/nikoscf/PycharmProjects/BookRecommendation/configurations/paths.y
 load_begin = DataLoader()
 load_begin.read_paths(paths)
 
-# execute one time to get the zip if is .zip, unzip, check for .csv and remove the redundant zip folder
-# load_begin.check_zip_and_csv()
+# # execute one time to get the zip if is .zip, unzip, check for .csv and remove the redundant zip folder
+# # load_begin.check_zip_and_csv()
 
 
 books = load_begin.read_data("BX-Books.csv")
@@ -77,62 +79,89 @@ ratings = load_begin.read_data("BX-Book-Ratings.csv")
 to_drop_columns = ['Image-URL-S', 'Image-URL-M', 'Image-URL-L']
 numeric_col_to_nan = ["Year-Of-Publication"]
 data_books = DataClean(books)
-data_books.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
+clean_data_books = data_books.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
 
 
 to_drop_columns = []
 numeric_col_to_nan = ["User-ID", "ISBN", "Book-Rating"]
 data_ratings = DataClean(ratings)
-data_ratings.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
+clean_data_ratings = data_ratings.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
 
 
 to_drop_columns = []
 numeric_col_to_nan = ["User-ID", "Age"]
 data_users = DataClean(users)
-data_users.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
+clean_data_users = data_users.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
 
 
-print("data_books:", data_books)
-print("data_users:", data_users)
-print("data_ratings:", data_ratings)
+# print("data_books:", clean_data_users)
+# print("data_users:", clean_data_users)
+# print("data_ratings:", clean_data_users)
 
-foreign_key1 = "ISBN"
-foreign_key2 = "User-ID"
+
+import seaborn as sea
+import matplotlib.pyplot as plt
+# from data.DataLoader import DataLoader
 
 # Joins of entities to find the difference among the two cases:
 # Some users  rated books that does not exist in Books dataset.
 # So we work with the data from the second case.
+# class DataAnalysis:
 
-def nums_fk_alignements(foreign_key1, foreign_key2, ratings, users, books):
 
-    ratings_new = ratings[ratings[foreign_key1].isin(books[foreign_key1])]
-    ratings_new = ratings_new[ratings_new[foreign_key2].isin(users[foreign_key2])]
-
+def rows_from_join_on_FKs(foreign_key1, foreign_key2, ratings, users, books):
+    ratings_join = ratings[ratings[foreign_key1].isin(books[foreign_key1])]
+    ratings_join = ratings_join[ratings_join[foreign_key2].isin(users[foreign_key2])]
     print(ratings.shape)
-    print(ratings_new.shape)
-    return ratings_new
+    print(ratings_join.shape)
+    return ratings_join
 
 
 # ratings with zero are not the absolute truth.
-def ratings_explicit_gathering(ratings_new):
-    ratings_explicit = ratings_new[ratings_new["Book-Rating"]!=0]
-    return ratings_explicit
-
-# hold user ids who exists in raters
-def users_explicit_gathering(ratings_explicit, users):
-    users_explicit = users[users["User-ID"].isin(ratings_explicit["User-ID"])]
-    return users_explicit
+def ratings_expl_gathering(ratings_new):
+    ratings_explct = ratings_new[ratings_new["Book-Rating"] != 0]
+    return ratings_explct
 
 
-def plot_percetages(ratings_explicit):
-    # import seaborn as sea
-    ratings_explicit["Book-Rating"].value_counts().sort_values().plot(kind='barh')
+# hold user ids who exists in raters. The expliciit values
+def users_expl_gathering(ratings_expl, users):
+    ratings_expl = users[users["User-ID"].isin(ratings_expl["User-ID"])]
+    return ratings_expl
 
-print(data_books)
+def plot_ratings_count(ratings_expl):
+    sea.countplot(data=ratings_expl, x="Book-Rating",
+                  order=ratings_expl["Book-Rating"].value_counts().index)
+    plt.show()
 
-ratings_new = nums_fk_alignements(foreign_key1, foreign_key2, ratings, users, books)
-ratings_explicit = ratings_explicit_gathering(ratings_new)
-plot_percetages(ratings_explicit)
+# @staticmethod
+def get_majority_ratings(ratings_expl):
+    counts1 = ratings_expl["User-ID"].value_counts()
+    ratings_expl = ratings_expl[ratings_expl["User-ID"].isin(counts1[counts1>=150].index)]
+    counts2 = ratings_expl["Book-Rating"].value_counts()
+    ratings_expl = ratings_expl[ratings_expl["Book-Rating"].isin(counts2[counts2>=150].index)]
+    return ratings_expl
+
+
+def to_pivot_table(majority_of_ratings, as_index, as_columns, as_values):
+    ratings_pivoted = pd.pivot_table(majority_of_ratings, index=as_index, columns=as_columns, values=as_values)
+    as_columns = ratings_pivoted.index
+    as_index = ratings_pivoted.columns
+    print("ratings_pivoted:")
+    print(ratings_pivoted)
+    return ratings_pivoted
+
+foreign_key1 = "ISBN"
+foreign_key2 = "User-ID"
+
+ratings_new = rows_from_join_on_FKs(foreign_key1, foreign_key2, clean_data_ratings, clean_data_users, clean_data_books)
+
+ratings_explicit = ratings_expl_gathering(ratings_new)
+plot_ratings_count(ratings_explicit)
+majority_ratings = get_majority_ratings(ratings_explicit)
+print(majority_ratings.head())
+ratings_pivoted = to_pivot_table(majority_ratings,"User-ID", "ISBN", "Book-Rating")
+ratings_pivoted = ratings_pivoted.fillna(0) # replace NaN (absence of rating) with 0 because ML algorithms (except some tree based) respond to numbers.
+print(ratings_pivoted.head())
 
 
 

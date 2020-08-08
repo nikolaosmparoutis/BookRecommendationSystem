@@ -49,10 +49,11 @@ class DataClean:
     # for the scope of this project we can use this.
 
     def execute_pipeline_cleaning(self, to_drop_columns, numeric_col_to_nan):
+        import pandas as pd
         self.clean_na()
         self.drop_columns(to_drop_columns)
         self.check_unique_values()
         self.remove_bad_char()
         self.check_numerical_and_set_nan(numeric_col_to_nan)
-        self.replace_nan(numeric_col_to_nan)
-        print(self.df)
+        clean_df = pd.DataFrame(self.replace_nan(numeric_col_to_nan))
+        return clean_df
