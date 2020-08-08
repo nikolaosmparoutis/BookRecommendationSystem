@@ -25,16 +25,29 @@ Ref : Restricted Boltzmann Machines for Collaborative Filtering
 
 --- Steps of CF---
 1. Find similarities of users or items
-2. Precict the rating of the items that are not rated yet by the users. ONLY using the rating despite  the
-users' differencies.
+2. Precict the rating of the items that are not rated yet by the users.
+ONLY using the rating despite the users' differencies if they exist.
 
 --- Accuracy measure---
 RMSE, MAE etc.
 
 --- Family algos for CF---
-1. Memory based, are statistical
+1. Memory based, are statistical, kNN
 2.  Factorized - Dimensionality Reductions family
-PCA, SVD, NFM, Autoencoders.
+PCA, SVD, NFM, Autoencoders, Restricted Boltzman Machines.
+
+--- Why i do not chose NN approaches---
+From previous experience with CF, Autoencoders, Restricted Boltzman Machines
+
+1. they require much more memory and time for training
+2. time for development, there are not in sklearn.
+3. Also we have to use one hot encoding this will cause the cource of dimensionality and memory crash.
+4. Tensor Process Unit is not available.
+5. These methods does not mean significant less error if the data are
+   not too much.In our case we do not have too much data.
+
+
+-> I use statistical based algorithm like KNN.
 
 
 --- Improving Recommendation Lists Through Topic Diversification ---

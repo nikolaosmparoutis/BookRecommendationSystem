@@ -4,7 +4,6 @@ import os
 import pandas as pd
 from data.DataClean import DataClean
 
-
 class DataLoader:
     path_to_file = None
     directory_to_extract_to = None
@@ -93,6 +92,10 @@ data_users = DataClean(users)
 data_users.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
 
 
+print("data_books:", data_books)
+print("data_users:", data_users)
+print("data_ratings:", data_ratings)
+
 foreign_key1 = "ISBN"
 foreign_key2 = "User-ID"
 
@@ -100,7 +103,7 @@ foreign_key2 = "User-ID"
 # Some users  rated books that does not exist in Books dataset.
 # So we work with the data from the second case.
 
-def nums_fk_alignements(foreign_key_1, foreign_key_2):
+def nums_fk_alignements(foreign_key1, foreign_key2, ratings, users, books):
 
     ratings_new = ratings[ratings[foreign_key1].isin(books[foreign_key1])]
     ratings_new = ratings_new[ratings_new[foreign_key2].isin(users[foreign_key2])]
@@ -110,17 +113,27 @@ def nums_fk_alignements(foreign_key_1, foreign_key_2):
     return ratings_new
 
 
-ratings_new = nums_fk_alignements(foreign_key1,foreign_key2)
-
-
 # ratings with zero are not the absolute truth.
 def ratings_explicit_gathering(ratings_new):
     ratings_explicit = ratings_new[ratings_new["Book-Rating"]!=0]
     return ratings_explicit
 
 # hold user ids who exists in raters
-def users_explicit_gathering(ratings_explicit):
+def users_explicit_gathering(ratings_explicit, users):
     users_explicit = users[users["User-ID"].isin(ratings_explicit["User-ID"])]
     return users_explicit
+
+
+def plot_percetages(ratings_explicit):
+    # import seaborn as sea
+    ratings_explicit["Book-Rating"].value_counts().sort_values().plot(kind='barh')
+
+print(data_books)
+
+ratings_new = nums_fk_alignements(foreign_key1, foreign_key2, ratings, users, books)
+ratings_explicit = ratings_explicit_gathering(ratings_new)
+plot_percetages(ratings_explicit)
+
+
 
 
