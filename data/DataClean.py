@@ -43,11 +43,8 @@ class DataClean:
         return self.df
 
     # This created to aggregate the logic running all at once for each dataset.
-    # to covert the case of many new data comming as batches or streams. Also,
-    # this saves multiple method calls and code repetition.
-    # Of course each dataset has different data and requires different analysis
-    # for the scope of this project we can use this.
-
+    # this saves multiple method calls, unreadable code and code repetition.
+    # Of course each dataset has different data and requires different analysis.
     def execute_pipeline_cleaning(self, to_drop_columns, numeric_col_to_nan):
         import pandas as pd
         self.clean_na()

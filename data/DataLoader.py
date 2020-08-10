@@ -31,6 +31,7 @@ class DataLoader:
     def check_zip_and_csv():
         zip_extension = os.path.splitext(DataLoader.path_to_file)[1]
         if zip_extension != ".zip":
+
             print("A .zip file does not exist in the given path.")
             return FileNotFoundError
         else:
@@ -54,7 +55,7 @@ class DataLoader:
         try:
             self.data = pd.read_csv(DataLoader.directory_to_extract_to + filename,
                                     sep=";", encoding='latin-1', error_bad_lines=False, warn_bad_lines=False,
-                                    low_memory=False, memory_map=True, nrows= 100000
+                                    low_memory=False, memory_map=True, nrows = 100000
                                     )
         except:
             raise TypeError("Wrong file name.")

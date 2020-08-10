@@ -5,7 +5,7 @@ from data.DataClean import DataClean
 from data.DataLoader import DataLoader
 
 
-class DataAnalysis():
+class DataAnalysis:
 
     # Joins of entities to find the difference among the two cases:
     # Some users rated books that does not exist in Books dataset and we remove them
@@ -37,11 +37,12 @@ class DataAnalysis():
         plt.show()
 
     @staticmethod
+    # User who rated at least 50 books
     def get_majority_ratings(ratings_expl):
         counts1 = ratings_expl["User-ID"].value_counts()
-        ratings_expl = ratings_expl[ratings_expl["User-ID"].isin(counts1[counts1 >= 150].index)]
+        ratings_expl = ratings_expl[ratings_expl["User-ID"].isin(counts1[counts1 >= 50].index)]
         counts2 = ratings_expl["Book-Rating"].value_counts()
-        ratings_expl = ratings_expl[ratings_expl["Book-Rating"].isin(counts2[counts2 >= 150].index)]
+        ratings_expl = ratings_expl[ratings_expl["Book-Rating"].isin(counts2[counts2 >= 50].index)]
         return ratings_expl
 
     @staticmethod
@@ -51,7 +52,7 @@ class DataAnalysis():
         as_index = pivoted_table.columns
         print("pivoted_columns: ", as_columns)
         print("pivoted_index: ", as_index)
-        print("pivoted majority_of_ratings:")
+        print("pivoted majority_of_ratings (users rated at least 50 books):")
         print(pivoted_table)
         return pivoted_table
 
@@ -60,16 +61,17 @@ class DataAnalysis():
         foreign_key1, foreign_key2 = "ISBN", "User-ID"
 
         ratings_new = DataAnalysis.rows_from_join_on_FKs(foreign_key1, foreign_key2,
-                                                          clean_ratings, clean_users, clean_books)
+                                                         clean_ratings, clean_users, clean_books)
 
         ratings_explicit = DataAnalysis.ratings_expl_gathering(ratings_new)
         DataAnalysis.plot_ratings_count(ratings_explicit, "Book-Rating")
         majority_ratings = DataAnalysis.get_majority_ratings(ratings_explicit)
-        print(majority_ratings.head())
+        print("ratings from users who rated >= 50 books", majority_ratings.head())
         ratings_pivoted = DataAnalysis.to_pivot_table(majority_ratings, "User-ID", "ISBN", "Book-Rating")
         # replace NaN (absence of rating) with 0 because ML algorithms (except some trees) work with numbers.
         ratings_pivoted = ratings_pivoted.fillna(0)
-        print(ratings_pivoted.head())
+        # print("ratings_pivoted.head()", ratings_pivoted.head())
+        return ratings_pivoted
 
 
 def main():
@@ -105,8 +107,6 @@ def main():
     # print("data_ratings:", clean_users)
 
     data_analysis = DataAnalysis()
-    data_analysis.execute_pipeline_data_analysis(clean_ratings, clean_users, clean_books)
+    ratings_pivoted = data_analysis.execute_pipeline_data_analysis(clean_ratings, clean_users, clean_books)
+    return ratings_pivoted
 
-
-if __name__ == "__main__":
-    main()
