@@ -2,11 +2,12 @@
 # http://www2.informatik.uni-freiburg.de/~cziegler/BX/
 import os
 import pandas as pd
-
+from configurations.LoggerCls import LoggerCls
 
 class DataLoader:
     path_to_file = None
     directory_to_extract_to = None
+    logModel = LoggerCls("data_logger", "FORDataLoading.log", "a", "INFO")
 
     def __init__(self):
         self.data = pd.DataFrame()
@@ -18,6 +19,7 @@ class DataLoader:
             cfg = yaml.load(yml_file, Loader=yaml.FullLoader)
             DataLoader.path_to_file = cfg["path_to_file"]
             DataLoader.directory_to_extract_to = cfg["directory_to_extract_to"]
+        # logging.error("file cannot open")
 
     @staticmethod
     def unzip_dataset():
@@ -33,7 +35,7 @@ class DataLoader:
         if zip_extension != ".zip":
 
             print("A .zip file does not exist in the given path.")
-            return FileNotFoundError
+            return logging.critical(FileNotFoundError)
         else:
             DataLoader.unzip_dataset()
             for files in os.listdir(DataLoader.directory_to_extract_to):
@@ -49,14 +51,14 @@ class DataLoader:
     @staticmethod
     def remove_zip_folder():
         os.remove(DataLoader.path_to_file)
-        print("The redundant folder .zip removed.")
+        logging.info("The redundant folder .zip removed.")
 
     def read_data(self, filename):
         try:
             self.data = pd.read_csv(DataLoader.directory_to_extract_to + filename,
                                     sep=";", encoding='latin-1', error_bad_lines=False, warn_bad_lines=False,
-                                    low_memory=False, memory_map=True, nrows = 100000
+                                    low_memory=False, memory_map=True, nrows=100000
                                     )
         except:
-            raise TypeError("Wrong file name.")
+            raise logging.critical(TypeError("Wrong file name."))
         return self.data

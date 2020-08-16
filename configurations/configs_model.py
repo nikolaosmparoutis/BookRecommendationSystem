@@ -1,6 +1,7 @@
 CFG = {
     "train": {
         "algorithm": "brute",
+        "radius": 0.1, #defualt to 1.0
         "k_num_neighbors": 5,
         "metric": ["cosine", "correlation"]
     }

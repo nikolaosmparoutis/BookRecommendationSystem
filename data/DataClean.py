@@ -1,14 +1,15 @@
 import numpy as np
+from configurations.LoggerCls import LoggerCls
 
 
 class DataClean:
     def __init__(self, datafr):
         self.df = datafr
+        self.logger = LoggerCls("data_logger", "DataCleaning.log", "a", "INFO")
 
     def clean_na(self):
         self.df.replace('', np.nan)
         # self.df.dropna(subset=[self.df.columns[0]]) # the first column has the primary key
-        # print(self.df)
         return self.df
 
     def drop_columns(self, to_drop_columns):
@@ -17,8 +18,7 @@ class DataClean:
 
     def check_unique_values(self):
         for cols in self.df:
-            print("Unique values in " + cols + "=" + str(self.df[cols].nunique()))
-        print('\n')
+            self.logger.info("Unique values in " + cols + "=" + str(self.df[cols].nunique()))
 
     def check_numerical_and_set_nan(self, cols_to_nan):
         for each_colm in cols_to_nan:
