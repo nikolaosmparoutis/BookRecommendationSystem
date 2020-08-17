@@ -3,9 +3,11 @@ from configurations.LoggerCls import LoggerCls
 
 
 class DataClean:
+    formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
+    logData = LoggerCls("DataClean logger", "DataLogger.log", "w", formatter, "INFO")
+
     def __init__(self, datafr):
         self.df = datafr
-        self.logger = LoggerCls("data_logger", "DataCleaning.log", "a", "INFO")
 
     def clean_na(self):
         self.df.replace('', np.nan)
@@ -18,7 +20,7 @@ class DataClean:
 
     def check_unique_values(self):
         for cols in self.df:
-            self.logger.info("Unique values in " + cols + "=" + str(self.df[cols].nunique()))
+            DataClean.logData.info("Unique values in " + cols + "=" + str(self.df[cols].nunique()))
 
     def check_numerical_and_set_nan(self, cols_to_nan):
         for each_colm in cols_to_nan:

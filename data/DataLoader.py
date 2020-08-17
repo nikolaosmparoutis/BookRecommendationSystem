@@ -4,10 +4,12 @@ import os
 import pandas as pd
 from configurations.LoggerCls import LoggerCls
 
+
 class DataLoader:
     path_to_file = None
     directory_to_extract_to = None
-    logModel = LoggerCls("data_logger", "FORDataLoading.log", "a", "INFO")
+    formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
+    logData = LoggerCls("DataLoader logger", "LoaderLogger.log", "w", formatter, "INFO")
 
     def __init__(self):
         self.data = pd.DataFrame()
@@ -26,7 +28,7 @@ class DataLoader:
         import zipfile
         with zipfile.ZipFile(DataLoader.path_to_file, 'r') as zip_ref:
             zip_ref.extractall(DataLoader.directory_to_extract_to)
-        print("The folder unzipped.")
+        DataLoader.logData.info("The folder unzipped.")
         return
 
     @staticmethod
@@ -34,24 +36,24 @@ class DataLoader:
         zip_extension = os.path.splitext(DataLoader.path_to_file)[1]
         if zip_extension != ".zip":
 
-            print("A .zip file does not exist in the given path.")
-            return logging.critical(FileNotFoundError)
+            DataLoader.logData.info("A .zip file does not exist in the given path.")
+            return DataLoader.logData.error(FileNotFoundError, exc_info=1)
         else:
             DataLoader.unzip_dataset()
             for files in os.listdir(DataLoader.directory_to_extract_to):
                 if os.path.splitext(files)[1] != ".csv":
-                    print("The file " + files + " is not .csv. This directory accept only .csv datasets")
+                    DataLoader.logData.info("The file " + files + " is not .csv. This directory accept only .csv datasets")
                     return FileNotFoundError
                 else:
                     break
             DataLoader.remove_zip_folder()
-            print("The check passed, all datasets are .csv")
+            DataLoader.logData.info("The check passed, all datasets are .csv")
             return
 
     @staticmethod
     def remove_zip_folder():
         os.remove(DataLoader.path_to_file)
-        logging.info("The redundant folder .zip removed.")
+        DataLoader.logData.info("The redundant folder .zip removed.")
 
     def read_data(self, filename):
         try:
@@ -60,5 +62,5 @@ class DataLoader:
                                     low_memory=False, memory_map=True, nrows=100000
                                     )
         except:
-            raise logging.critical(TypeError("Wrong file name."))
+            raise DataLoader.logData.error(TypeError("Wrong file name."), exc_info=1)
         return self.data

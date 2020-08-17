@@ -10,19 +10,21 @@ from configurations.LoggerCls import LoggerCls
 
 class Model(BaseModel):
 
+    formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
+    logModel = LoggerCls("Model logger", "ModelLogger.log", "w", formatter, "INFO")
+
     def __init__(self, config):
         super().__init__(config)
         self.dataset = pd.DataFrame
         self.algorithm = None
         self.k_num_neighbors = None
         self.metric = None
-        self.logger = LoggerCls("model_logger", "ModelLogger.log", "w", "INFO")
 
     def load_data(self, dataset_):
         self.dataset = dataset_
-        self.logger.info("pivoted ratings with users who rated >= 150 books. NaN replaced by 0. Dimensions:".
+        Model.logModel.info("pivoted ratings with users who rated >= 150 books. NaN replaced by 0. Dimensions: {}:".
                          format(self.dataset.shape))
-        self.logger.info("dataset head".format(self.dataset.head))
+        Model.logModel.info("dataset head: {0}".format(self.dataset.head))
         return self
 
     def _set_training_parameters(self):
@@ -46,7 +48,7 @@ class Model(BaseModel):
                 continue
             else:
                 pass
-                self.logger.info('{0}: User {1}, with similarity of {2}'.format(i, indices.flatten()[i] + 1, similarities.flatten()[i]))
+                Model.logModel.info('{0}: User {1}, with similarity of {2}'.format(i, indices.flatten()[i] + 1, similarities.flatten()[i]))
 
         return similarities, indices
 
@@ -61,7 +63,7 @@ class Model(BaseModel):
             if indices.flatten()[i] + 1 == user_id:
                 continue
             else:
-                ratings_diff = self.dataset.iloc[indices.flatten()[i], item_id - 1] - np.mean(
+                ratings_diff = self.dataset.iloc[indices.flatten()[i], item_id-1] - np.mean(
                     self.dataset.iloc[indices.flatten()[i], :])
                 product = ratings_diff * (similarities[i])
                 wtd_sum = wtd_sum + product
@@ -73,6 +75,7 @@ class Model(BaseModel):
         return prediction
 
     def _recommendItem(self, user_id, item_id, approach):
+        prediction = 0
         self._set_training_parameters()
         number_of_user_ids = self.dataset.shape[0]
         if user_id < 1 or user_id > number_of_user_ids or type(user_id) is not int:
@@ -83,9 +86,9 @@ class Model(BaseModel):
             elif approach == 'User_based_CF(correlation)':
                 prediction = self._predict_userbased(user_id, item_id, str(self.metric[1]))
 
-            self.logger.info("item_id:{0} | use_id:{1}".format(item_id, user_id))
-            if self.dataset.iloc[item_id -1, user_id -1] != 0:
-                self.logger.info('Item already rated')
+            Model.logModel.info("item_id:{0} | use_id:{1}".format(item_id, user_id))
+            if self.dataset.iloc[item_id-1, user_id-1] != 0:
+                Model.logModel.info('Item already rated')
                 # predictions with smaller rating than 5 do not have value for the user
             else:
                 if prediction >= 5:
@@ -102,15 +105,17 @@ class Model(BaseModel):
 
 def main():
     ratings = data.DataAnalysis.main()
-    print(ratings.shape)
+
     md = Model(CFG)
+    md.logModel.info("---Model Logging---")
     md.load_data(ratings)
-    md.logger.info("ratings.shape:".format(ratings.shape))
+    print(ratings.shape)
+    # md.logModel.info("ratings.shape:".format(ratings.shape))
     approach = "User_based_CF(cosine)"
 
-    for user_id in range(1, ratings.shape[1]-1):
-        for item_id in range(1, 14):
-            md.train(user_id, item_id, approach)
+    # for user_id in range(1, ratings.shape[1]-1):
+        # for item_id in range(1, 13):
+    md.train(7, 13, approach)
 
 
 if __name__ == '__main__':

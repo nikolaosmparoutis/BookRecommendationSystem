@@ -5,9 +5,10 @@ from data.DataClean import DataClean
 from data.DataLoader import DataLoader
 from configurations.LoggerCls import LoggerCls
 
-class DataAnalysis:
 
-    logger = LoggerCls("data_logger", "FORDataLoading.log", "a", "INFO")
+class DataAnalysis:
+    formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
+    logData = LoggerCls("DataAnalysis logger", "DataLogger.log", "w", formatter, "INFO")
 
     # Joins of entities to find the difference among the two cases:
     # Some users rated books that does not exist in Books dataset and we remove them
@@ -15,8 +16,7 @@ class DataAnalysis:
     def rows_from_join_on_FKs(foreign_key1, foreign_key2, ratings, users, books):
         ratings_join = ratings[ratings[foreign_key1].isin(books[foreign_key1])]
         ratings_join = ratings_join[ratings_join[foreign_key2].isin(users[foreign_key2])]
-        DataAnalysis.logger.info("All user who rated non non available book in pur data {0}."
-                         "Users who rated books that does exist in Books dataset {1}".format(ratings.shape, ratings_join.shape))
+        DataAnalysis.logData.info("User who rated non  available book in dataset {0}. Users who rated books in Books dataset {1}".format(ratings.shape, ratings_join.shape))
         # print(ratings_join.shape)
         return ratings_join
 
@@ -52,8 +52,9 @@ class DataAnalysis:
         pivoted_table = pd.pivot_table(majority_of_ratings, index=as_index, columns=as_columns, values=as_values)
         as_columns = pivoted_table.index
         as_index = pivoted_table.columns
-        DataAnalysis.logger.info("pivoted_columns: ".format(as_columns))
-        DataAnalysis.logger.info("pivoted_index: ".format(as_index))
+        DataAnalysis.logData.info("pivoted_columns: {} ".format(as_columns))
+        DataAnalysis.logData.info("pivoted_index: {}".format(as_index))
+        DataAnalysis.logData.info("pivoted_table: {}".format(pivoted_table.head()))
         # print("pivoted_columns: ", as_columns)
         # print("pivoted_index: ", as_index)
         # print("pivoted majority_of_ratings for users who rated at least 150 books:")
@@ -69,11 +70,11 @@ class DataAnalysis:
         ratings_explicit = DataAnalysis.ratings_expl_gathering(ratings_new)
         DataAnalysis.plot_ratings_count(ratings_explicit, "Book-Rating")
         majority_ratings = DataAnalysis.get_majority_ratings(ratings_explicit)
-        DataAnalysis.logger.info("ratings from users who rated >= 150 books".format(majority_ratings.head()))
+        DataAnalysis.logData.info("ratings from users who rated >= 150 books".format(majority_ratings.head()))
         ratings_pivoted = DataAnalysis.to_pivot_table(majority_ratings, "User-ID", "ISBN", "Book-Rating")
         # replace NaN (absence of rating) with 0 because ML algorithms (except some trees) work with numbers.
         ratings_pivoted = ratings_pivoted.fillna(0)
-        DataAnalysis.logger.info("ratings_pivoted.head()" .format(ratings_pivoted.head()))
+        DataAnalysis.logData.info("ratings_pivoted.head()" .format(ratings_pivoted.head()))
         # print("ratings_pivoted.head()", ratings_pivoted.head())
         return ratings_pivoted
 
