@@ -1,5 +1,5 @@
 # Book Recommendation System
-Machine Learning in python using Object Oriented development.
-Automated Data pipeline, Data Cleaning, Data Preparation and Analysis, Model build, Logging the messages to multiple files.
+Data Analysis and Machine Learning: 
+Automated data loading, processing, analysis, collaborative filtering to predict users' favorite books and suggest books to users when the predicted rating is >= 5, logging to multiple files and to stdout..
 
 Run Model.py to start it.
