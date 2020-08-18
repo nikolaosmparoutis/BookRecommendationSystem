@@ -28,7 +28,7 @@ class DataAnalysis:
         ratings_explct = ratings_new[ratings_new["Book-Rating"] != 0]
         return ratings_explct
 
-    # hold user ids who exists in raters. The expliciit values
+    # hold user ids who exists in raters. The explicit values
     @staticmethod
     def users_expl_gathering(ratings_expl, users):
         ratings_expl = users[users["User-ID"].isin(ratings_expl["User-ID"])]
@@ -41,7 +41,7 @@ class DataAnalysis:
         plt.show()
 
     @staticmethod
-    # User who rated at least 50 books
+    # Users who rated at least 150 books
     def get_majority_ratings(ratings_expl):
         counts1 = ratings_expl["User-ID"].value_counts()
         ratings_expl = ratings_expl[ratings_expl["User-ID"].isin(counts1[counts1 >= 150].index)]
@@ -58,10 +58,6 @@ class DataAnalysis:
         DataAnalysis.logData.info("pivoted_index: {}".format(as_index))
         DataAnalysis.logData.info("pivoted_table:")
         DataAnalysis.logData.info(format(pivoted_table.head()))
-        # print("pivoted_columns: ", as_columns)
-        # print("pivoted_index: ", as_index)
-        # print("pivoted majority_of_ratings for users who rated at least 150 books:")
-        # print(pivoted_table)
         return pivoted_table
 
     @staticmethod
@@ -88,7 +84,7 @@ def main():
     load_begin = DataLoader()
     load_begin.read_paths(paths)
 
-    # execute one time to get the zip if is .zip, unzip it in absolute dir you set in paths.yaml
+    # Uncomment to Execute this one time to get the zip if is .zip, unzip it in absolute dir you set in paths.yaml
     # Then it checks for .csv and remove the redundant zip folder
     # load_begin.check_zip_and_csv()
 
@@ -110,10 +106,6 @@ def main():
     numeric_col_to_nan = ["User-ID", "ISBN", "Book-Rating"]
     data_ratings = DataClean(ratings)
     clean_ratings = data_ratings.execute_pipeline_cleaning(to_drop_columns, numeric_col_to_nan)
-
-    # print("data_books:", clean_users)
-    # print("data_users:", clean_users)
-    # print("data_ratings:", clean_users)
 
     data_analysis = DataAnalysis()
     ratings_pivoted = data_analysis.execute_pipeline_data_analysis(clean_ratings, clean_users, clean_books)
