@@ -22,7 +22,6 @@ class DataLoader:
             cfg = yaml.load(yml_file, Loader=yaml.FullLoader)
             DataLoader.path_to_file = cfg["path_to_file"]
             DataLoader.directory_to_extract_to = cfg["directory_to_extract_to"]
-        # logging.error("file cannot open")
 
     @staticmethod
     def unzip_dataset():
