@@ -5,13 +5,13 @@ class LoggerCls:
 
     # Always instantiate a logger, do not use the root logger, the top in hierarhy.
     # Beware do use logging.basicConfig, initializes the root logger and overwrites every logger
-    def __init__(self, logger_type, logger_name, logger_filename, logger_filemode, formatter, logger_level):
+    def __init__(self, logger_type, name, filename, filemode, formatter, level):
 
-        self.logger = logging.getLogger(logger_name)
-        self.logger.setLevel(logger_level)
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(level)
 
         if logger_type == "log_to_file":
-            file_handler = logging.FileHandler(logger_filename, logger_filemode)
+            file_handler = logging.FileHandler(filename, filemode)
             formatter_ = logging.Formatter(formatter)
             file_handler.setFormatter(formatter_)
             self.logger.addHandler(file_handler)

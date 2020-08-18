@@ -1,10 +1,11 @@
 import numpy as np
 from configurations.LoggerCls import LoggerCls
-
+import os
 
 class DataClean:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
     formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
-    logData = LoggerCls("DataClean logger", "DataLogger.log", "w", formatter, "INFO")
+    logData = LoggerCls("log_to_file", "DataClean", dir_path+"/DataLogger.log", "w", formatter, "INFO")
 
     def __init__(self, datafr):
         self.df = datafr

@@ -1,15 +1,16 @@
 # data: 278,858 users |  1,149,780 ratings | 271,379 books.
 # http://www2.informatik.uni-freiburg.de/~cziegler/BX/
-import os
 import pandas as pd
 from configurations.LoggerCls import LoggerCls
+import os
 
 
 class DataLoader:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
     path_to_file = None
     directory_to_extract_to = None
     formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
-    logData = LoggerCls("DataLoader logger", "LoaderLogger.log", "w", formatter, "INFO")
+    logData = LoggerCls("log_to_file", "DataLoader", dir_path+"/DataLogger.log", "w", formatter, "INFO")
 
     def __init__(self):
         self.data = pd.DataFrame()
@@ -42,7 +43,7 @@ class DataLoader:
             DataLoader.unzip_dataset()
             for files in os.listdir(DataLoader.directory_to_extract_to):
                 if os.path.splitext(files)[1] != ".csv":
-                    DataLoader.logData.info("The file " + files + " is not .csv. This directory accept only .csv datasets")
+                    DataLoader.logData.info("The file "+files+"is not .csv. This directory accept only .csv datasets")
                     return FileNotFoundError
                 else:
                     break

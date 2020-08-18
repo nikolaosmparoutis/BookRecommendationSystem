@@ -4,14 +4,13 @@ from model.BaseModel import BaseModel
 from configurations.configs_model import CFG
 import data.DataAnalysis
 from configurations.LoggerCls import LoggerCls
-# the line below will activate automatically when the metric comes from the configurations
-# from scipy.spatial.distance import correlation, cosine
-
+import os
 
 class Model(BaseModel):
-
+    dir_path = os.path.dirname(os.path.realpath(__file__))  # get the canonical files's path then get the name
     formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
-    logModel = LoggerCls("Model logger", "ModelLogger.log", "w", formatter, "INFO")
+    logModelFile = LoggerCls("log_to_file", "ModelToFile", dir_path+"/ModelLogger.log", "w", formatter, "INFO")
+    logModelStream = LoggerCls("log_to_stdout", "ModelToStream", None, "w", formatter, "INFO")
 
     def __init__(self, config):
         super().__init__(config)
@@ -22,9 +21,9 @@ class Model(BaseModel):
 
     def load_data(self, dataset_):
         self.dataset = dataset_
-        Model.logModel.info("pivoted ratings with users who rated >= 150 books. NaN replaced by 0. Dimensions: {}:".
-                         format(self.dataset.shape))
-        Model.logModel.info("dataset head: {0}".format(self.dataset.head))
+        Model.logModelFile.info("pivoted ratings with users who rated >= 150 books. NaN replaced by 0. Dimensions: {}:"
+                         .format(self.dataset.shape))
+        Model.logModelFile.info("dataset head: \n {}".format(self.dataset.head()))
         return self
 
     def _set_training_parameters(self):
@@ -42,13 +41,12 @@ class Model(BaseModel):
         distances, indices = model_knn.kneighbors(self.dataset.iloc[user_id - 1, :].values.reshape(1, -1),
                                                   n_neighbors=self.k_num_neighbors + 1)
         similarities = 1 - distances.flatten()
-        # print('The {0} most similar users for User {1}:\n'.format(self.k_num_neighbors, user_id))
         for i in range(0, len(indices.flatten())):
             if indices.flatten()[i] + 1 == user_id:
                 continue
             else:
-                pass
-                Model.logModel.info('{0}: User {1}, with similarity of {2}'.format(i, indices.flatten()[i] + 1, similarities.flatten()[i]))
+                Model.logModelFile.info('{0}: User {1}, with similarity of {2}'
+                                        .format(i, indices.flatten()[i] + 1, similarities.flatten()[i]))
 
         return similarities, indices
 
@@ -70,8 +68,8 @@ class Model(BaseModel):
 
         prediction = int(round(mean_rating + (wtd_sum / sum_wt)))
         if prediction >= 5:
-            print('\n Predicted rating >= 5 for user {0} -> item {1}: {2}'
-                  .format(user_id, item_id, prediction))
+            Model.logModelStream.info('Predicted rating >= 5 for user {0} -> item {1}: {2}'
+                                      .format(user_id, item_id, prediction))
         return prediction
 
     def _recommendItem(self, user_id, item_id, approach):
@@ -79,20 +77,20 @@ class Model(BaseModel):
         self._set_training_parameters()
         number_of_user_ids = self.dataset.shape[0]
         if user_id < 1 or user_id > number_of_user_ids or type(user_id) is not int:
-            print('Userid does not exist. Enter numbers from 1-', number_of_user_ids)
+            Model.logModelStream.info("Userid does not exist. Enter numbers from 1-".format(number_of_user_ids))
         else:
             if approach == 'User_based_CF(cosine)':
                 prediction = self._predict_userbased(user_id, item_id, str(self.metric[0]))
             elif approach == 'User_based_CF(correlation)':
                 prediction = self._predict_userbased(user_id, item_id, str(self.metric[1]))
 
-            Model.logModel.info("item_id:{0} | use_id:{1}".format(item_id, user_id))
+            Model.logModelFile.info("item_id:{0} | use_id:{1}".format(item_id, user_id))
             if self.dataset.iloc[item_id-1, user_id-1] != 0:
-                Model.logModel.info('Item already rated')
+                Model.logModelStream.info('Item already rated')
                 # predictions with smaller rating than 5 do not have value for the user
             else:
                 if prediction >= 5:
-                    print('\n Item recommended')
+                    Model.logModelStream.info('Item recommended')
                     return
                 else:
                     return
@@ -103,19 +101,23 @@ class Model(BaseModel):
     def evaluate(self):
         pass
 
+
 def main():
     ratings = data.DataAnalysis.main()
-
     md = Model(CFG)
-    md.logModel.info("---Model Logging---")
+    Model.logModelStream.info("---Model Logging---")
     md.load_data(ratings)
-    print(ratings.shape)
-    # md.logModel.info("ratings.shape:".format(ratings.shape))
+    Model.logModelStream.info("processed ratings dataset dimensions: {},"
+                              .format(ratings.shape))
+    # md.logModelFile.info("ratings.shape:".format(ratings.shape))
     approach = "User_based_CF(cosine)"
 
-    # for user_id in range(1, ratings.shape[1]-1):
-        # for item_id in range(1, 13):
-    md.train(7, 13, approach)
+    # for user_id in range(1, ratings.shape[1]-1): # this is for all the user ids, attention the system will crash
+    #     for item_id in range(1, 13): # this is for 13 items
+    ''' all users and all items, in module  DataLoader.py i set nrows = 100000, line 63'''
+    #         md.train(user_id, item_id, approach)
+
+    md.train(7, 13, approach)  # for user 7 and item 13
 
 
 if __name__ == '__main__':
