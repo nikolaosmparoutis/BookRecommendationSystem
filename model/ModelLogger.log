@@ -1,0 +1,17 @@
+ModelToFile - INFO - Line No. : 30 - pivoted ratings with users who rated >= 150 books. NaN replaced by 0. Dimensions: (14, 7402):
+ModelToFile - INFO - Line No. : 30 - dataset head: 
+ ISBN     0002005018  0002551675  0002558122  ...  9838523283  9974560004  9974643058
+User-ID                                      ...                                    
+2276            0.0         0.0         0.0  ...         0.0         0.0         0.0
+4017            0.0         0.0         0.0  ...         0.0         0.0         0.0
+4385            0.0         0.0         0.0  ...         0.0         0.0         0.0
+6251            0.0         0.0         0.0  ...         0.0         0.0         0.0
+6543            0.0         0.0         0.0  ...         0.0         0.0         0.0
+
+[5 rows x 7402 columns]
+ModelToFile - INFO - Line No. : 30 - 1: User 8, with similarity of 0.05543916857983022
+ModelToFile - INFO - Line No. : 30 - 2: User 6, with similarity of 0.05455784576284306
+ModelToFile - INFO - Line No. : 30 - 3: User 14, with similarity of 0.026434671852188618
+ModelToFile - INFO - Line No. : 30 - 4: User 10, with similarity of 0.025257896096109733
+ModelToFile - INFO - Line No. : 30 - 5: User 1, with similarity of 0.01871140166308216
+ModelToFile - INFO - Line No. : 30 - item_id:13 | use_id:7

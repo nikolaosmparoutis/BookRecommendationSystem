@@ -6,6 +6,7 @@ import data.DataAnalysis
 from configurations.LoggerCls import LoggerCls
 import os
 
+
 class Model(BaseModel):
     dir_path = os.path.dirname(os.path.realpath(__file__))  # get the canonical files's path then get the name
     formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'

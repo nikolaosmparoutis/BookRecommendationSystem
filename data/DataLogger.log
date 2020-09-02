@@ -1,0 +1,28 @@
+DataAnalysis - INFO - Line No. : 30 - User who rated non  available book in dataset (100000, 3). Users who rated books in Books dataset (74703, 3)
+DataAnalysis - INFO - Line No. : 30 - ratings from users who rated >= 150 books
+DataAnalysis - INFO - Line No. : 30 -        User-ID        ISBN  Book-Rating
+14854     2276  0020960808           10
+14856     2276  0030632366            9
+14858     2276  0061030643            8
+14860     2276  0061098353            8
+14861     2276  0061099155            9
+DataAnalysis - INFO - Line No. : 30 - pivoted_columns: Int64Index([ 2276,  4017,  4385,  6251,  6543,  6575,  7346, 11676, 12982,
+            13552, 16634, 16795, 17950, 21014],
+           dtype='int64', name='User-ID') 
+DataAnalysis - INFO - Line No. : 30 - pivoted_index: Index(['0002005018', '0002551675', '0002558122', '0002712172', '0006143199',
+       '0006177492', '0006363121', '000648302', '0006492347', '000649840',
+       ...
+       '9700509125', '972802844', '9812327975', '9813056096', '9813056363',
+       '9813056495', '9813056606', '9838523283', '9974560004', '9974643058'],
+      dtype='object', name='ISBN', length=7402)
+DataAnalysis - INFO - Line No. : 30 - pivoted_table:
+DataAnalysis - INFO - Line No. : 30 - ISBN     0002005018  0002551675  0002558122  ...  9838523283  9974560004  9974643058
+User-ID                                      ...                                    
+2276            NaN         NaN         NaN  ...         NaN         NaN         NaN
+4017            NaN         NaN         NaN  ...         NaN         NaN         NaN
+4385            NaN         NaN         NaN  ...         NaN         NaN         NaN
+6251            NaN         NaN         NaN  ...         NaN         NaN         NaN
+6543            NaN         NaN         NaN  ...         NaN         NaN         NaN
+
+[5 rows x 7402 columns]
+DataAnalysis - INFO - Line No. : 30 - ratings_pivoted.head()
