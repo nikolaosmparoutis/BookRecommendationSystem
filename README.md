@@ -6,9 +6,9 @@ Run Model.py to start it.
 
 
 
-- Output for User with ID=7 the item 13, with predicted rating of his liking 5/10.__
+- Output for User with ID=7 the item 13, with predicted rating of his liking 5/10.\
 
-ModelToStream - INFO - Line No. : 30 - ---Model Logging---__
-ModelToStream - INFO - Line No. : 30 - processed ratings dataset dimensions: (14, 7402)__
-ModelToStream - INFO - Line No. : 30 - Predicted rating >= 5 for user 7 -> item 13: 5__
+ModelToStream - INFO - Line No. : 30 - ---Model Logging---\
+ModelToStream - INFO - Line No. : 30 - processed ratings dataset dimensions: (14, 7402)\
+ModelToStream - INFO - Line No. : 30 - Predicted rating >= 5 for user 7 -> item 13: 5\
 ModelToStream - INFO - Line No. : 30 - Item recommended
