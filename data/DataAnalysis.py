@@ -3,7 +3,7 @@ import seaborn as sea
 import matplotlib.pyplot as plt
 from data.DataClean import DataClean
 from data.DataLoader import DataLoader
-from configurations.LoggerCls import LoggerCls
+from logging_utils.LoggerCls import LoggerCls
 import os
 
 

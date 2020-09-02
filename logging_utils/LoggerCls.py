@@ -4,7 +4,7 @@ import logging
 class LoggerCls:
 
     # Always instantiate a logger, do not use the root logger, the top in hierarchy.
-    # Beware do use logging.basicConfig, initializes the root logger and overwrites every logger
+    # Beware do use logging_utils.basicConfig, initializes the root logger and overwrites every logger
     def __init__(self, log_type, name, filename, filemode, formatter, level):
 
         self.logger = logging.getLogger(name)

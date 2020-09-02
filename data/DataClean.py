@@ -1,5 +1,5 @@
 import numpy as np
-from configurations.LoggerCls import LoggerCls
+from logging_utils.LoggerCls import LoggerCls
 import os
 
 class DataClean:

@@ -1,7 +1,7 @@
 # data: 278,858 users |  1,149,780 ratings | 271,379 books.
 # http://www2.informatik.uni-freiburg.de/~cziegler/BX/
 import pandas as pd
-from configurations.LoggerCls import LoggerCls
+from logging_utils.LoggerCls import LoggerCls
 import os
 
 

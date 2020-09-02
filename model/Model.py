@@ -3,7 +3,7 @@ from sklearn.neighbors import NearestNeighbors
 from model.BaseModel import BaseModel
 from configurations.configs_model import CFG
 import data.DataAnalysis
-from configurations.LoggerCls import LoggerCls
+from logging_utils.LoggerCls import LoggerCls
 import os
 
 
