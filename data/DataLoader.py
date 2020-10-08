@@ -5,7 +5,14 @@ from logging_utils.LoggerCls import LoggerCls
 import os
 
 
-class DataLoader:
+class Singleton(object):
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(Singleton, cls).__new__(cls)
+        return cls.instance
+
+
+class DataLoader(Singleton):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path_to_file = None
     directory_to_extract_to = None

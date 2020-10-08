@@ -3,7 +3,5 @@ pip install pandas
 pip install numpy
 pip install matplotlib
 pip install seaborn
-pip install ipywidgets # for a small drop down menu
-
-
+pip install ipywidgets # for a small drop down menu, skip this if you do not want UI
 pip install psutil # optional, used for the memory calculation
