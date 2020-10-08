@@ -2,6 +2,7 @@ import numpy as np
 from logging_utils.LoggerCls import LoggerCls
 import os
 
+
 class DataClean:
     dir_path = os.path.dirname(os.path.realpath(__file__))
     formatter = '%(name)s - %(levelname)s - Line No. : %(lineno)d - %(message)s'
