@@ -14,4 +14,3 @@ ModelToStream - INFO - Line No. : 30 - Predicted rating >= 5 for user 7 -> item 
 ModelToStream - INFO - Line No. : 30 - Item recommended
 
 
-[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=baroutisnk)](https://github.com/anuraghazra/github-readme-stats)
