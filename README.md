@@ -12,3 +12,6 @@ ModelToStream - INFO - Line No. : 30 - ---Model Logging---\
 ModelToStream - INFO - Line No. : 30 - processed ratings dataset dimensions: (14, 7402)\
 ModelToStream - INFO - Line No. : 30 - Predicted rating >= 5 for user 7 -> item 13: 5\
 ModelToStream - INFO - Line No. : 30 - Item recommended
+
+
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=baroutisnk@gmail.com)](https://github.com/anuraghazra/github-readme-stats)
